@@ -33,6 +33,7 @@ class DBStorage:
         dic = {}
         if cls is None:
             classes = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+
             for clas in classes:
                 query = self.__session.query(clas)
                 first_dic = clas + "." + query.id
@@ -42,7 +43,7 @@ class DBStorage:
             for item in query:
                 first_dic = type(item).__name__ + "." + obj.id
                 setattr(dic, first_dic, item)
-        return objDict
+        return dic
 
     def new(self, obj):
         """ Add the obj to the current db session """
