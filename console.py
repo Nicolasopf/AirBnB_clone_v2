@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from os import getenv as env
 
 
 class HBNBCommand(cmd.Cmd):
@@ -139,7 +140,10 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     setattr(new_instance, key, int(value))
                 # -- HERE ENDS ALL THE COMPROBATIONS FOR THE VALUES --
-        storage.save()
+        if env("HBNB_TYPE_STORAGE") == "db":
+            storage.save()
+        else:
+            storage.save()
         print(new_instance.id)
 
     def help_create(self):
