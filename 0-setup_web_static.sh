@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Setup installation, creating folders, install nginx, give ownerships and create symbolic links
-apt update nginx
+apt-get update
 apt-get install nginx -y
 mkdir -p /data/web_static/releases/test/
 mkdir -p /data/web_static/shared
