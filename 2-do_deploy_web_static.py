@@ -46,6 +46,9 @@ def do_deploy(archive_path):
         # Move the folder web_static from tgz
         run("mv {}web_static/* {}".format(folder, folder))
 
+        # rm web_static
+        run("rm -rf {}web_static".format(folder))
+
         # Delete the symbolic link
         run("rm -rf {}".format(symlink))
 
