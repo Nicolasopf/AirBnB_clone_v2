@@ -20,34 +20,37 @@ def do_pack():
 
 
 def do_deploy(archive_path):
+    """ Deploy a new file to web_static """
     if not path.exists(archive_path):
         return False
 
-    # Put the file in /tmp/ directory
-    put(archive_path, remote="/tmp/")
+    try:
+        # Put the file in /tmp/ directory
+        put(archive_path, "/tmp/")
 
-    # File token and variables to be used
-    tgz = archive_path.split("/")[-1]
-    folder = "/data/web_static/releases/{}/".format(tgz[:-4])
-    tmp_directory = "/tmp/{}".format(tgz)
-    symlink = "/data/web_static/current"
+        # File token and variables to be used
+        tgz = archive_path.split("/")[-1]
+        folder = "/data/web_static/releases/{}/".format(tgz[:-4])
+        tmp_directory = "/tmp/{}".format(tgz)
+        symlink = "/data/web_static/current"
 
-    # Create the folder to uncompress targz
-    run("mkdir -p {}".format(folder))
+        # Create the folder to uncompress targz
+        run("mkdir -p {}".format(folder))
 
-    # Uncompress the tgz file
-    run("tar -xzf {} -C {}".format(tmp_directory, folder))
+        # Uncompress the tgz file
+        run("tar -xzf {} -C {}".format(tmp_directory, folder))
 
-    # Delete the tgz files
-    run("rm {}".format(tmp_directory))
+        # Delete the tgz files
+        run("rm {}".format(tmp_directory))
 
-    # Move the folder web_static from tgz
-    run("mv {}web_static/* {}".format(folder, folder))
+        # Move the folder web_static from tgz
+        run("mv {}web_static/* {}".format(folder, folder))
 
-    # Delete the symbolic link
-    run("rm -rf {}".format(symlink))
+        # Delete the symbolic link
+        run("rm -rf {}".format(symlink))
 
-    # Create a new symbolic link
-    run("ln -s {} {}", format(folder, symlink))
-
-    print("New version deployed!")
+        # Create a new symbolic link
+        run("ln -s {} {}", format(folder, symlink))
+        return True
+    except:
+        return False
