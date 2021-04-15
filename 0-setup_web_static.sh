@@ -13,5 +13,7 @@ fi
 ln -s /data/web_static/releases/test/ "$link"
 echo "Holberton School" > /data/web_static/releases/test/index.html
 chown -R ubuntu:ubuntu /data/
-sed -i '/server_name _;/a\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/\n\t}' /etc/nginx/sites-available/default
+if [[ $(grep -c "alias /data/web_static/current" /etc/nginx/sites-available/default) -ge 1 ]]; then
+	sed -i '/server_name _;/a\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/\n\t}' /etc/nginx/sites-available/default
+fi
 service nginx restart
