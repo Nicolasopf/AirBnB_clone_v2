@@ -3,7 +3,6 @@
 from fabric.api import local, put, run, env
 from os import path
 from datetime import datetime
-from fabric import Connection
 
 env.hosts = ['{}@35.237.172.23'.format(env.user), '{}@34.75.60.230'.format(
     env.user)]
