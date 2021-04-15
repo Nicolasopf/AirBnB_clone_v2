@@ -6,10 +6,10 @@ mkdir -p /data/web_static/releases/test/
 mkdir -p /data/web_static/shared/
 link="/data/web_static/current"
 rm -rf "$link"
-ln -sfn /data/web_static/releases/test/ "$link"
+ln -s /data/web_static/releases/test/ "$link"
 echo "Holberton School" > /data/web_static/releases/test/index.html
-chown -R ubuntu:ubuntu /data/
-if [[ $(grep -c "alias /data/web_static/current" /etc/nginx/sites-available/default) -eq 0 ]]; then
-	sed -i '/server_name _;/a\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
+str="\\\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}\n"
+if [ "$(grep -c "location /hbnb_static {" /etc/nginx/sites-available/default)" -eq 0 ]; then
+    sed -i "45i $str" /etc/nginx/sites-available/default
 fi
 service nginx restart
