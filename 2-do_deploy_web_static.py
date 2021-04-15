@@ -53,7 +53,7 @@ def do_deploy(archive_path):
         run("rm -rf {}".format(symlink))
 
         # Create a new symbolic link
-        run("ln -s {} {}", format(folder, symlink))
+        run("ln -s {} {}".format(folder, symlink))
         return True
     except:
         return False
