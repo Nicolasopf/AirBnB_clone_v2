@@ -12,11 +12,12 @@ class FileStorage:
         """Returns a dictionary of models currently in storage"""
         if cls is None:
             return FileStorage.__objects
-        dic = {}
-        for k, v in FileStorage.__objects.items():
-            if cls == type(v):
-                dic[k] = v
-        return dic
+        else:
+            class_dict = {}
+            for key, value in FileStorage.__objects.items():
+                if cls == type(value):
+                    class_dict[key] = value
+            return class_dict
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -42,22 +43,25 @@ class FileStorage:
         from models.review import Review
 
         classes = {
-            'BaseModel': BaseModel, 'User': User, 'Place': Place,
-            'State': State, 'City': City, 'Amenity': Amenity,
-            'Review': Review
-        }
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
         try:
             temp = {}
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+                        self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        """ Delete an object """
-        if obj is None:
-            return
-        dictionary = obj.to_dict()
-        self.__objects.pop(dictionary['__class__'] + '.' + dictionary['id'])
+        """ Deletes an object from __objects. """
+        if obj:
+            objDict = obj.to_dict()
+            objDict = "{}.{}".format(objDict["__class__"], objDict["id"])
+            try:
+                self.__objects.pop(objDict)
+            except:
+                pass

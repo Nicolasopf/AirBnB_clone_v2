@@ -1,68 +1,65 @@
 #!/usr/bin/python3
-""" Create the new engine, in Database """
-
+""" Manages DBstorage Class """
 from sqlalchemy.orm import sessionmaker, scoped_session, Session
-from sqlalchemy import create_engine
+from sqlalchemy import (create_engine)
 from models.base_model import Base
-from os import getenv
+from models.amenity import Amenity
 from models.review import Review
 from models.state import State
 from models.place import Place
-from models.city import City
-from models.amenity import Amenity
+from os import getenv as env
 from models.user import User
+from models.city import City
 
 
-class DBStorage:
-    """"""
+class DBStorage():
+    """ Class for logic of the DataBase """
     __engine = None
     __session = None
 
     def __init__(self):
-        """ Create the engine for the database """
-        user = getenv("HBNB_MYSQL_USER")
-        passwd = getenv("HBNB_MYSQL_PWD")
-        host = getenv("HBNB_MYSQL_HOST")
-        db = getenv("HBNB_MYSQL_DB")
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
-            user, passwd, host, db), pool_pre_ping=True)
-        if getenv("HBNB_ENV") == 'test':
+        """ Definition of the inital method. """
+        user = env("HBNB_MYSQL_USER")
+        passwd = env("HBNB_MYSQL_PWD")
+        host = env("HBNB_MYSQL_HOST")
+        db = env("HBNB_MYSQL_DB")
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, passwd, host, db),
+                                      pool_pre_ping=True)
+        if env("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        dic = {}
-        if cls is None:
-            classes = ['User', 'State', 'City', 'Amenity', 'Place', 'Review']
+        """ Returns the dictionary of all current objects. """
+        objDict = {}
+        if cls:
+            query = self.__session.query(cls).all()
+            for obj in query:
+                strKey = "{}.{}".format(type(obj).__name__, obj.id)
+                objDict[strKey] = obj
 
-            for clas in classes:
-                query = self.__session.query(clas)
-                first_dic = clas + "." + query.id
-                setattr(dic, first_dic, query)
         else:
-            query = self.__session.query(cls)
-            for item in query:
-                first_dic = type(item).__name__ + "." + obj.id
-                setattr(dic, first_dic, item)
-        return dic
+            classList = ["Amenity", "Review", "State", "Place", "User", "City"]
+            for className in classList:
+                obj = self.__session.query(eval(className)).all()
+                strKey = "{}.{}".format(className, obj.id)
+                setattr(objDict, strKey, obj)
+        return (objDict)
 
     def new(self, obj):
-        """ Add the obj to the current db session """
+        """ Adds a new object to session. """
         self.__session.add(obj)
 
     def save(self):
-        """ Save the current changes """
+        """ Commits the current session to the DB. """
         self.__session.commit()
 
     def delete(self, obj=None):
-        """ Delete an object """
+        """ Deletes an object from the current session. """
         self.__session.delete(obj)
 
     def reload(self):
-        """
-        create all tables in the database (feature of SQLAlchemy) (WARNING: all
-        classes who inherit from Base must be imported before calling
-        Base.metadata.create_all(engine))
-        """
+        """ Reloads the engine, session and objects. """
         Base.metadata.create_all(self.__engine)
         session = sessionmaker(expire_on_commit=False, bind=self.__engine)
         Session = scoped_session(session)
