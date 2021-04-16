@@ -60,6 +60,7 @@ def do_deploy(archive_path):
 
 
 def deploy():
+    """ creates and distributes an archive to your web servers """
     if env.tgz == "":
         do_pack()
     return do_deploy(env.tgz)
