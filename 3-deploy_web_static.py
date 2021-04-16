@@ -6,6 +6,7 @@ from datetime import datetime
 
 env.hosts = ['{}@35.237.172.23'.format(env.user), '{}@34.75.60.230'.format(
     env.user)]
+env.tgz = ""
 
 
 def do_pack():
@@ -15,7 +16,7 @@ def do_pack():
     if not path.exists("versions"):
         local("mkdir -p versions")
     local("tar -czf versions/web_static_{}.tgz web_static".format(time))
-    return "versions/web_static_{}.tgz".format(time)
+    env.tgz = "versions/web_static_{}.tgz".format(time)
 
 
 def do_deploy(archive_path):
@@ -59,5 +60,6 @@ def do_deploy(archive_path):
 
 
 def deploy():
-    tgz = do_pack()
-    return do_deploy(tgz)
+    if env.tgz == "":
+        do_pack()
+    return do_deploy(env.tgz)
