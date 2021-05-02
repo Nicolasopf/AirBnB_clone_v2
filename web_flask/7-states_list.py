@@ -10,6 +10,7 @@ app.url_map.strict_slashes = False
 
 @app.route('/states_list')
 def index():
+    """ Index to display lists """
     states = storage.all(State)
     states_list = {}
     for key, value in states.items():
