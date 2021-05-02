@@ -23,6 +23,9 @@ class State(BaseModel, Base):
             objDict = FileStorage().all()
             citiesList = []
             for key, value in objDict.items():
-                if value.id == self.id:
-                    citiesList.append(value)
+                try:
+                    if value.state_id == self.id:
+                        citiesList.append(value)
+                except:
+                    pass
             return (citiesList)
