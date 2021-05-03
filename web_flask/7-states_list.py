@@ -11,10 +11,10 @@ app = Flask(__name__)
 def index():
     """ Index to display lists """
     states = storage.all(State)
-    states_list = {}
-    for key, value in states.items():
-        states_list[value.name] = value
-    return render_template('7-states_list.html', states_list=states_list)
+    # states_list = {}
+    # for key, value in states.items():
+    #     states_list[value.name] = value
+    return render_template('7-states_list.html', states=states)
 
 
 @app.teardown_appcontext
